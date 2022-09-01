@@ -2,6 +2,7 @@ import { useState, ChangeEvent, MouseEvent } from 'react';
 
 import SourceMap from './types/SourceMap';
 import parseSourceMapFile from './utils/parseSourceMapFile';
+import styles from './App.module.css';
 
 const emptySourceMap: SourceMap = {
   version: 3,
@@ -37,17 +38,19 @@ function App() {
 
       <input type="file" onChange={handleFileChange} />
 
-      <ul>
-        {sourceMap.sources.map((file, index) => (
-          <li>
-            <a href="#" onClick={handleOpenFile(index)}>
-              {file}
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div className={styles.explorer}>
+        <ul className={styles.files}>
+          {sourceMap.sources.map((file, index) => (
+            <li>
+              <a href="#" onClick={handleOpenFile(index)}>
+                {file}
+              </a>
+            </li>
+          ))}
+        </ul>
 
-      <pre>{sourceContent}</pre>
+        <pre className={styles.code}>{sourceContent}</pre>
+      </div>
     </div>
   );
 }
