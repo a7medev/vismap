@@ -1,12 +1,7 @@
-import { useState } from 'react';
+import { useState, ChangeEvent, MouseEvent } from 'react';
 
-interface SourceMap {
-  version: number;
-  sources: string[];
-  sourcesContent: string[];
-  names: string[];
-  mappings: string;
-}
+import SourceMap from './types/SourceMap';
+import parseSourceMapFile from './utils/parseSourceMapFile';
 
 const emptySourceMap: SourceMap = {
   version: 3,
@@ -18,23 +13,22 @@ const emptySourceMap: SourceMap = {
 
 function App() {
   const [sourceMap, setSourceMap] = useState<SourceMap>(emptySourceMap);
+  const [sourceContent, setSourceContent] = useState<string>('');
 
-  function handleFileChange(e: any) {
+  function handleOpenFile(index: number) {
+    return (e: MouseEvent) => {
+      e.preventDefault();
+      setSourceContent(sourceMap.sourcesContent[index]);
+    };
+  }
+
+  async function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     const input = e.target;
     if (!input.files) {
-      setSourceMap(emptySourceMap);
+      return setSourceMap(emptySourceMap);
     }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        setSourceMap(JSON.parse(reader.result as string));
-      } catch (err) {
-        console.error(err);
-        alert('Failed to parse source map contents');
-      }
-    };
-    reader.readAsText(input.files[0]);
+    const _sourceMap = await parseSourceMapFile(input.files[0]);
+    setSourceMap(_sourceMap);
   }
 
   return (
@@ -44,10 +38,16 @@ function App() {
       <input type="file" onChange={handleFileChange} />
 
       <ul>
-        {sourceMap.sources.map((file) => (
-          <li>{file}</li>
+        {sourceMap.sources.map((file, index) => (
+          <li>
+            <a href="#" onClick={handleOpenFile(index)}>
+              {file}
+            </a>
+          </li>
         ))}
       </ul>
+
+      <pre>{sourceContent}</pre>
     </div>
   );
 }
