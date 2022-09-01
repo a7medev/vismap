@@ -3,6 +3,7 @@ import { useState, ChangeEvent, MouseEvent } from 'react';
 import SourceMap from './types/SourceMap';
 import parseSourceMapFile from './utils/parseSourceMapFile';
 import styles from './App.module.css';
+import FilesList from './components/FilesList';
 
 const emptySourceMap: SourceMap = {
   version: 3,
@@ -15,13 +16,7 @@ const emptySourceMap: SourceMap = {
 function App() {
   const [sourceMap, setSourceMap] = useState<SourceMap>(emptySourceMap);
   const [sourceContent, setSourceContent] = useState<string>('');
-
-  function handleOpenFile(index: number) {
-    return (e: MouseEvent) => {
-      e.preventDefault();
-      setSourceContent(sourceMap.sourcesContent[index]);
-    };
-  }
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
   async function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     const input = e.target;
@@ -39,17 +34,15 @@ function App() {
       <input type="file" onChange={handleFileChange} />
 
       <div className={styles.explorer}>
-        <ul className={styles.files}>
-          {sourceMap.sources.map((file, index) => (
-            <li>
-              <a href="#" onClick={handleOpenFile(index)}>
-                {file}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <FilesList
+          files={sourceMap.sources}
+          selectedIndex={selectedIndex}
+          onSelect={setSelectedIndex}
+        />
 
-        <pre className={styles.code}>{sourceContent}</pre>
+        <pre className={styles.code}>
+          {sourceMap.sourcesContent[selectedIndex]}
+        </pre>
       </div>
     </div>
   );

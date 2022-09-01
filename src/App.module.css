@@ -17,10 +17,6 @@ body {
   grid-template-columns: 1fr 4fr;
 }
 
-.files {
-  overflow: scroll;
-}
-
 .code {
   overflow: scroll;
   padding: 1rem;

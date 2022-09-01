@@ -1,0 +1,22 @@
+.list {
+  overflow: scroll;
+  list-style-type: none;
+}
+.list li {
+  width: 100%;
+}
+.list li a {
+  display: block;
+  text-decoration: none;
+  color: #70869d;
+  transition: color 250ms ease;
+  padding: .25rem 1rem;
+}
+.list li a:hover {
+  color: #bcdeff;
+  background: #213555;
+}
+.list li a.selected {
+  color: white;
+  background: #113d84;
+}
